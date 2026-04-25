@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThyroCare | AI-Powered Thyroid Health</title>
+    <style>
+        :root {
+            --primary-blue: #0056b3;
+            --light-blue: #e6f0fa;
+            --secondary-green: #28a745;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --bg-light: #f8f9fa;
+            --white: #ffffff;
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: font-family 0.2s ease;
+        }
+
+
+        header {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        nav a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+
+        .lang-switch {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .lang-switch option {
+            background-color: var(--white);
+            color: var(--text-dark);
+        }
+
+        .container {
+            padding: 1.5rem 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            flex-grow: 1;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+
+        .view-section {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+
+        .card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e0e0e0;
+        }
+
+        .card h2,
+        .card h3 {
+            margin-top: 0;
+            color: var(--primary-blue);
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-weight: bold;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+            border: none;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        .btn:hover {
+            background-color: #004494;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-green);
+        }
+
+        .btn-secondary:hover {
+            background-color: #218838;
+        }
+
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: var(--border-radius);
+            box-sizing: border-box;
+        }
+
+
+        .history-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .history-list li {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-list li:last-child {
+            border-bottom: none;
+        }
+
+        .badge {
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+
+        footer {
+            background-color: #333;
+            color: #ccc;
+            text-align: center;
+            padding: 1.5rem 1rem;
+            font-size: 0.8rem;
+            margin-top: auto;
+        }
+
+        .disclaimer {
+            font-weight: bold;
+            color: #ffb3b3;
+            margin-bottom: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+
+            .btn {
+                width: auto;
+            }
+        }
+
+        #map {
+            width: 100%;
+            height: 300px;
+            border-radius: 4px;
+            z-index: 1; /* Keep map below header */
+        }
+    </style>
+
+    <!-- Leaflet.js for Interactive Free Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- html2pdf.js for PDF Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo" onclick="navigateTo('home-view')">ThyroCare</div>
+        <div class="nav-controls">
+            <nav id="main-nav">
+                <!-- Navigation is injected dynamically via JS based on auth status -->
+            </nav>
+            <select class="lang-switch" onchange="toggleLanguage(this.value)">
+                <option value="en">English</option>
+                <option value="bn">বাংলা</option>
+            </select>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <div id="home-view" class="view-section">
+            <div class="card" style="background-color: var(--light-blue); border-left: 4px solid var(--primary-blue);">
+                <h3 data-i18n="homeEndorseTitle" style="margin-top: 0; color: var(--primary-blue);">✓ Reviewed by
+                    Endocrinologists</h3>
+                <p data-i18n="homeEndorseDesc">Our medical logic and educational content are validated by our Medical
+                    Advisory Board.</p>
+            </div>
+            <div class="grid">
+                <div class="card">
+                    <h2 data-i18n="homeChatTitle">💬 AI Symptom Assessment</h2>
+                    <p data-i18n="homeChatDesc">Chat securely with our AI to assess your thyroid health across type,
+                        duration, and severity.</p>
+                    <button class="btn" onclick="navigateTo('chatbot-view')" data-i18n="homeChatBtn">Start
+                        Assessment</button>
+                </div>
+                <div class="card">
+                    <h2 data-i18n="homeDocTitle">🩺 Find an Endocrinologist</h2>
+                    <p data-i18n="homeDocDesc">Locate specialized endocrinologists near your university using our
+                        location-based search.</p>
+                    <button class="btn btn-secondary" onclick="navigateTo('doctor-view')" data-i18n="homeDocBtn">Open
+                        Doctor Finder</button>
+                </div>
+            </div>
+            <div class="card">
+                <h2 data-i18n="homeEduTitle">📚 Educational Content Hub</h2>
+                <p data-i18n="homeEduDesc">Access medically reviewed articles, infographics, and FAQs about thyroid
+                    basics and treatments.</p>
+                <button class="btn" style="background-color: #6c757d;" onclick="navigateTo('education-view')"
+                    data-i18n="homeEduBtn">Browse Library</button>
+            </div>
+        </div>
+
+        <div id="login-view" class="view-section active">
+            <div class="card" style="max-width: 400px; margin: 0 auto;">
+                <h2>Login to ThyroCare</h2>
+                <div class="form-group">
+                    <label>University Email</label>
+                    <input type="email" id="login-email" placeholder="student@university.edu.bd">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" placeholder="••••••••">
+                </div>
+                <button class="btn" id="login-btn" onclick="handleLogin()">Login</button>
+                <p style="text-align: center; margin-top: 1rem; font-size: 0.9rem;">
+                    Don't have an account? <a href="#" onclick="navigateTo('signup-view')">Sign up here</a>
+                </p>
+            </div>
+        </div>
+
+        <div id="signup-view" class="view-section">
+            <div class="card" style="max-width: 400px; margin: 0 auto;">
+                <h2>Create Account</h2>
+                <p style="font-size: 0.9rem; color: var(--text-light);">Step 1: Basic Information</p>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="signup-name" placeholder="Your Name">
+                </div>
+                <div class="form-group">
+                    <label>University Email</label>
+                    <input type="email" id="signup-email" placeholder="student@university.edu.bd">
+                </div>
+                <div class="form-group">
+                    <label>Password (Min 8 chars)</label>
+                    <input type="password" id="signup-password" placeholder="••••••••">
+                </div>
+                <button class="btn btn-secondary" id="signup-btn" onclick="handleSignup()">Sign Up</button>
+                <button class="btn" onclick="navigateTo('login-view')"
+                    style="background-color: transparent; color: var(--primary-blue); border: 1px solid var(--primary-blue);">Back
+                    to Login</button>
+            </div>
+        </div>
+
+        <div id="dashboard-view" class="view-section">
+            <h2 id="dashboard-title" style="margin-bottom: 0;">Student Dashboard</h2>
+            <p style="color: var(--text-light); margin-top: 0;">Welcome back! Manage your health tracking here.</p>
+
+            <div class="grid">
+                <div class="card">
+                    <h2>Profile Details</h2>
+                    <p><strong>Status:</strong> <span class="badge">Verified Student</span></p>
+                    <p id="user-email-display"><strong>Email:</strong> user@iub.edu.bd</p>
+                    <button class="btn" onclick="handleEditProfile()"
+                        style="background-color: transparent; color: var(--primary-blue); border: 1px solid var(--primary-blue);">Edit
+                        Profile</button>
+                </div>
+                <div class="card">
+                    <h2>Quick Actions</h2>
+                    <button class="btn" onclick="navigateTo('chatbot-view')">New Symptom Check</button>
+                    <button class="btn btn-secondary" onclick="exportHistory()">Export History (PDF)</button>
+                </div>
+            </div>
+
+                <div class="card" style="grid-column: span 2;">
+                    <h2>Recent Conversations & Assessments</h2>
+                    <ul id="symptom-history-list" class="history-list">
+                        <li>Loading...</li>
+                    </ul>
+                </div>
+        </div>
+
+        <div id="chatbot-view" class="view-section">
+            <div class="card" style="border: 2px solid #ffb3b3;">
+                <strong>⚠️ Disclaimer:</strong> This chatbot uses AI to assess symptoms. It cannot provide a
+                medical diagnosis. Always consult a doctor.
+            </div>
+            <div class="card" style="height: 400px; display: flex; flex-direction: column;">
+                <h2>ThyroCare Symptom Checker</h2>
+                <div id="chat-history"
+                    style="flex-grow: 1; background-color: var(--bg-light); border-radius: 4px; padding: 1rem; margin-bottom: 1rem; overflow-y: auto;">
+                    <p><strong>ThyroCare AI:</strong> Hello! I'm here to help you understand your thyroid health. Can
+                        you describe the primary symptom you are experiencing (e.g., fatigue, weight changes, neck
+                        swelling)?</p>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <input type="text" id="chat-input" placeholder="Type your symptoms here..."
+                        style="flex-grow: 1; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px;">
+                    <button id="send-chat-btn" onclick="handleSendChat()" class="btn" style="width: auto; margin: 0;">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="doctor-view" class="view-section">
+            <div class="card">
+                <h2>🩺 Find an Endocrinologist</h2>
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <input type="text" id="map-search" placeholder="Enter your location (e.g., Bashundhara, Dhaka)"
+                        style="flex-grow: 1; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px;">
+                    <button onclick="searchLocation()" class="btn btn-secondary" style="width: auto; margin: 0;">Search</button>
+                    <button onclick="useMyLocation()" class="btn" style="width: auto; margin: 0; background-color: var(--primary-blue);">📍 My Location</button>
+                </div>
+                <div id="map" style="margin-bottom: 1rem;"></div>
+                <ul id="doctor-list" class="history-list">
+                    <li>
+                        <div>
+                            <strong>Dr. Anisur Rahman</strong><br>
+                            <span style="font-size: 0.85rem; color: var(--text-light);">Endocrinologist • Evercare
+                                Hospital • 2.5km away</span>
+                        </div>
+                        <button class="btn" style="width: auto; padding: 0.5rem 1rem; font-size: 0.85rem;">View
+                            Profile</button>
+                    </li>
+                    <li>
+                        <div>
+                            <strong>Dr. Farhana Islam</strong><br>
+                            <span style="font-size: 0.85rem; color: var(--text-light);">Thyroid Specialist • United
+                                Hospital • 4.1km away</span>
+                        </div>
+                        <button class="btn" style="width: auto; padding: 0.5rem 1rem; font-size: 0.85rem;">View
+                            Profile</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="education-view" class="view-section">
+            <div class="card">
+                <h2>📚 Educational Content Hub</h2>
+                <input type="text" placeholder="Search articles, symptoms, or treatments..."
+                    style="width: 100%; padding: 0.75rem; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 1rem; box-sizing: border-box;">
+
+                <div id="article-list" class="grid">
+                    <div style="border: 1px solid #eee; padding: 1rem; border-radius: 4px;">
+                        <span class="badge">Thyroid Basics</span>
+                        <h3 style="margin: 0.5rem 0;">Understanding the Thyroid Gland</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-light);">A simple guide to how your thyroid
+                            regulates metabolism.</p>
+                        <a href="#" style="font-size: 0.85rem; color: var(--primary-blue); font-weight: bold;">Read
+                            Article →</a>
+                    </div>
+                    <div style="border: 1px solid #eee; padding: 1rem; border-radius: 4px;">
+                        <span class="badge" style="background-color: #f8d7da; color: #721c24;">Disorders</span>
+                        <h3 style="margin: 0.5rem 0;">Hypothyroidism vs. Hyperthyroidism</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-light);">Learn the key differences in symptoms
+                            and causes.</p>
+                        <a href="#" style="font-size: 0.85rem; color: var(--primary-blue); font-weight: bold;">Read
+                            Article →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="article-detail-view" class="view-section">
+            <button class="btn" style="background-color: transparent; color: var(--primary-blue); border: 1px solid var(--primary-blue); width: auto; margin-bottom: 1rem; padding: 0.5rem 1rem;" onclick="navigateTo('education-view')">← Back to Hub</button>
+            <div class="card" id="article-detail-content">
+                <h2>Loading article...</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <div class="container" style="padding-top: 0; padding-bottom: 0;">
+            <div class="disclaimer" data-i18n="footerDisclaimer">
+                
+            </div>
+            
+        </div>
+    </footer>
+
+    <script>
+
+        const translations = {
+            en: {
+                navDashboard: "Dashboard",
+                navLogin: "Login",
+                homeEndorseTitle: "✓ Reviewed by Endocrinologists",
+                homeEndorseDesc: "Our medical logic and educational content are validated by our Medical Advisory Board.",
+                homeChatTitle: "💬 AI Symptom Assessment",
+                homeChatDesc: "Chat securely with our AI to assess your thyroid health across type, duration, and severity.",
+                homeChatBtn: "Start Assessment",
+                homeDocTitle: "🩺 Find an Endocrinologist",
+                homeDocDesc: "Locate specialized endocrinologists near your university using our location-based search.",
+                homeDocBtn: "Open Doctor Finder",
+                homeEduTitle: "📚 Educational Content Hub",
+                homeEduDesc: "Access medically reviewed articles, infographics, and FAQs about thyroid basics and treatments.",
+                homeEduBtn: "Browse Library",
+                
+            },
+            bn: {
+                navDashboard: "ড্যাশবোর্ড",
+                navLogin: "লগইন",
+                homeEndorseTitle: "✓ এন্ডোক্রিনোলজিস্টদের দ্বারা পরীক্ষিত",
+                homeEndorseDesc: "আমাদের মেডিকেল লজিক এবং শিক্ষামূলক বিষয়বস্তু আমাদের মেডিকেল অ্যাডভাইজরি বোর্ড দ্বারা যাচাইকৃত।",
+                homeChatTitle: "💬 এআই লক্ষণ মূল্যায়ন",
+                homeChatDesc: "আপনার থাইরয়েডের ধরন, সময়কাল এবং তীব্রতা মূল্যায়ন করতে আমাদের এআই-এর সাথে নিরাপদে চ্যাট করুন।",
+                homeChatBtn: "মূল্যায়ন শুরু করুন",
+                homeDocTitle: "🩺 ডাক্তার খুঁজুন",
+                homeDocDesc: "আমাদের অবস্থান-ভিত্তিক অনুসন্ধান ব্যবহার করে আপনার বিশ্ববিদ্যালয়ের কাছাকাছি বিশেষজ্ঞ এন্ডোক্রিনোলজিস্টদের খুঁজুন।",
+                homeDocBtn: "ডাক্তার ফাইন্ডার খুলুন",
+                homeEduTitle: "📚 শিক্ষামূলক কন্টেন্ট হাব",
+                homeEduDesc: "থাইরয়েডের প্রাথমিক বিষয় এবং চিকিৎসা সম্পর্কে চিকিৎসকদের দ্বারা পর্যালোচনা করা প্রবন্ধ এবং সাধারণ প্রশ্নাবলী দেখুন।",
+                homeEduBtn: "লাইব্রেরি ব্রাউজ করুন",
+                
+            }
+        };
+
+
+        function toggleLanguage(lang) {
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+
+
+            if (lang === 'bn') {
+                document.body.style.fontFamily = "'Kalpurush', 'SolaimanLipi', 'Segoe UI', Tahoma, sans-serif";
+            } else {
+                document.body.style.fontFamily = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+            }
+        }
+
+
+        function navigateTo(viewId) {
+            const views = document.querySelectorAll('.view-section');
+            views.forEach(view => view.classList.remove('active'));
+            const targetView = document.getElementById(viewId);
+            if (targetView) targetView.classList.add('active');
+            window.scrollTo(0, 0);
+
+            // Special handling for Dashboard: load data if needed
+            if (viewId === 'dashboard-view') {
+                loadDashboardData();
+            } else if (viewId === 'doctor-view') {
+                loadDoctorsData();
+            } else if (viewId === 'education-view') {
+                loadEducationData();
+            }
+        }
+
+        const API_URL = 'http://localhost:3000/api/v1';
+
+        // --- NAVIGATION STATE ---
+        function updateNavigation() {
+            const nav = document.getElementById('main-nav');
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            if (token && user) {
+                nav.innerHTML = `
+                    <a onclick="navigateTo('dashboard-view')">Dashboard</a>
+                    <a onclick="navigateTo('chatbot-view')">Chatbot</a>
+                    <a onclick="navigateTo('doctor-view')">Doctors</a>
+                    <a onclick="navigateTo('education-view')">Education Hub</a>
+                    <a onclick="handleLogout()" style="color: #ffb3b3;">Logout (${user.name.split(' ')[0]})</a>
+                `;
+            } else {
+                nav.innerHTML = `
+                    <a onclick="navigateTo('home-view')">Home</a>
+                    <a onclick="navigateTo('login-view')">Login</a>
+                `;
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            updateNavigation();
+            navigateTo('login-view');
+        }
+
+        // Initialize nav on load
+        window.addEventListener('DOMContentLoaded', () => {
+            updateNavigation();
+        });
+
+        // --- AUTHENTICATION LOGIC ---
+
+        async function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const btn = document.getElementById('login-btn');
+
+            if(!email || !password) return alert('Please enter email and password');
+
+            btn.innerText = 'Logging in...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    alert('Login successful!');
+                    updateNavigation();
+                    navigateTo('dashboard-view');
+                } else {
+                    alert(data.message || 'Login failed');
+                }
+            } catch (err) {
+                alert('Server error. Make sure backend is running.');
+            } finally {
+                btn.innerText = 'Login';
+                btn.disabled = false;
+            }
+        }
+
+        async function handleSignup() {
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const btn = document.getElementById('signup-btn');
+
+            if(!name || !email || !password) return alert('Please fill all fields');
+
+            btn.innerText = 'Signing up...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`${API_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    alert(data.message);
+                    navigateTo('login-view');
+                } else {
+                    alert(data.message || 'Signup failed');
+                }
+            } catch (err) {
+                alert('Server error. Make sure backend is running.');
+            } finally {
+                btn.innerText = 'Sign Up';
+                btn.disabled = false;
+            }
+        }
+        async function loadDashboardData() {
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user'));
+            if(!token || !user) return;
+
+            document.getElementById('dashboard-title').innerText = `Welcome back, ${user.name.split(' ')[0]}!`;
+            document.getElementById('user-email-display').innerHTML = `<strong>Email:</strong> ${user.email} <br> <strong>Full Name:</strong> ${user.name}`;
+
+            try {
+                const res = await fetch(`${API_URL}/symptoms`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                const list = document.getElementById('symptom-history-list');
+                
+                if (data.success && data.data.length > 0) {
+                    list.innerHTML = data.data.map(item => `
+                        <li>
+                            <div>
+                                <strong>${item.symptomType} (${item.severity})</strong>
+                                <div style="font-size: 0.85rem; color: var(--text-light);">${new Date(item.timestamp).toLocaleDateString()}</div>
+                            </div>
+                        </li>
+                    `).join('');
+                } else {
+                    list.innerHTML = '<li><div><strong style="color:var(--text-light)">No symptom history found.</strong></div></li>';
+                }
+            } catch(err) {
+                console.error(err);
+            }
+        }
+
+        async function loadDoctorsData() {
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch(`${API_URL}/doctors`, {
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                });
+                const data = await res.json();
+                const list = document.getElementById('doctor-list');
+                
+                if (data.success && data.data.length > 0) {
+                    list.innerHTML = data.data.map(doc => `
+                        <li>
+                            <div>
+                                <strong>${doc.name}</strong><br>
+                                <span style="font-size: 0.85rem; color: var(--text-light);">${doc.specialty} • ${doc.clinicAddress}</span>
+                            </div>
+                            <button class="btn" style="width: auto; padding: 0.5rem 1rem; font-size: 0.85rem;">View Profile</button>
+                        </li>
+                    `).join('');
+                } else {
+                    list.innerHTML = '<li><strong style="color:var(--text-light)">No doctors available in the database yet.</strong></li>';
+                }
+            } catch(err) {
+                console.error(err);
+            }
+        }
+
+        async function loadEducationData() {
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch(`${API_URL}/articles`, {
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                });
+                const data = await res.json();
+                const list = document.getElementById('article-list');
+                
+                if (data.success && data.data.length > 0) {
+                    list.innerHTML = data.data.map(article => `
+                        <div style="border: 1px solid #eee; padding: 1rem; border-radius: 4px;">
+                            <span class="badge" style="background-color: var(--light-blue); color: var(--primary-blue)">${article.category}</span>
+                            <h3 style="margin: 0.5rem 0;">${article.title}</h3>
+                            <p style="font-size: 0.85rem; color: var(--text-light);">${article.content.substring(0, 60)}...</p>
+                            <a href="#" onclick="viewArticle('${article.id}'); return false;" style="font-size: 0.85rem; color: var(--primary-blue); font-weight: bold;">Read Article →</a>
+                        </div>
+                    `).join('');
+                } else {
+                    list.innerHTML = '<p style="color:var(--text-light); width:100%; text-align:center;">No articles available yet.</p>';
+                }
+            } catch(err) {
+                console.error(err);
+            }
+        }
+
+        async function viewArticle(id) {
+            const token = localStorage.getItem('token');
+            navigateTo('article-detail-view');
+            const contentDiv = document.getElementById('article-detail-content');
+            contentDiv.innerHTML = '<h2>Loading article...</h2>';
+            
+            try {
+                const res = await fetch(`${API_URL}/articles/${id}`, {
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                });
+                const data = await res.json();
+                
+                if (data.success && data.data) {
+                    const article = data.data;
+                    const imageHtml = article.imageUrl ? '<img src="' + article.imageUrl + '" style="max-width: 100%; border-radius: 4px; margin-bottom: 1rem;" />' : '';
+                    contentDiv.innerHTML = `
+                        <span class="badge" style="background-color: var(--light-blue); color: var(--primary-blue); margin-bottom: 0.5rem; display: inline-block;">${article.category}</span>
+                        <h2 style="margin-top: 0;">${article.title}</h2>
+                        <div style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 1rem;">Published on: ${new Date(article.createdAt).toLocaleDateString()}</div>
+                        ${imageHtml}
+                        <div style="line-height: 1.8;">
+                            ${article.content.replace(/\n/g, '<br>')}
+                        </div>
+                    `;
+                } else {
+                    contentDiv.innerHTML = '<p style="color:var(--text-light);">Article not found or you are not authorized to view it.</p>';
+                }
+            } catch(err) {
+                console.error(err);
+                contentDiv.innerHTML = '<p style="color: red;">Failed to load article.</p>';
+            }
+        }
+
+        let chatSessionHistory = [];
+
+        async function handleSendChat() {
+            const input = document.getElementById('chat-input');
+            const historyDiv = document.getElementById('chat-history');
+            const msg = input.value.trim();
+            if(!msg) return;
+
+            input.value = '';
+            historyDiv.innerHTML += `
+                <div style="text-align: right; margin-top: 1rem;">
+                    <p style="background-color: var(--primary-blue); color: white; display: inline-block; padding: 0.5rem 1rem; border-radius: 1rem 1rem 0 1rem; margin: 0;">${msg}</p>
+                </div>
+            `;
+            historyDiv.scrollTop = historyDiv.scrollHeight;
+
+            const token = localStorage.getItem('token');
+            if(!token) {
+                alert("Please log in to use the AI Chatbot.");
+                return;
+            }
+
+            try {
+                // Call real Gemini backend
+                const res = await fetch(`${API_URL}/chat/message`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ message: msg, history: chatSessionHistory }) 
+                });
+                
+                const data = await res.json();
+                
+                if(data.success) {
+                    const botReply = data.reply;
+                    historyDiv.innerHTML += `
+                        <div style="margin-top: 1rem;">
+                            <p><strong>ThyroCare AI:</strong> ${botReply.replace(/\n/g, '<br>')}</p>
+                        </div>
+                    `;
+                    
+                    // Update internal memory
+                    chatSessionHistory.push({ role: 'user', parts: [{ text: msg }] });
+                    chatSessionHistory.push({ role: 'model', parts: [{ text: botReply }] });
+
+                    // Auto-log symptom to history
+                    fetch(`${API_URL}/symptoms`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                        body: JSON.stringify({ symptomType: msg, severity: 'moderate', notes: 'Auto-logged from chatbot' })
+                    }).catch(e => console.log('Failed to log symptom:', e));
+                    
+                } else {
+                    historyDiv.innerHTML += `<div style="margin-top: 1rem; color: red;"><p><strong>Error:</strong> AI failed to respond.</p></div>`;
+                }
+                historyDiv.scrollTop = historyDiv.scrollHeight;
+                
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        // --- LEAFLET MAP LOGIC ---
+        let map;
+        let markers = [];
+
+        function initMap(lat = 23.8103, lng = 90.4125) { // Default Dhaka
+            if (map) {
+                map.setView([lat, lng], 13);
+                fetchNearbyClinics(lat, lng);
+                return;
+            }
+            
+            map = L.map('map').setView([lat, lng], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+
+            fetchNearbyClinics(lat, lng);
+        }
+
+        function useMyLocation() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    initMap(lat, lng);
+                    
+                    // Add user marker
+                    L.marker([lat, lng]).addTo(map)
+                        .bindPopup("<b>You are here!</b>").openPopup();
+                        
+                }, error => {
+                    alert("Location access denied or failed.");
+                    initMap(); // fallback to default
+                });
+            } else {
+                alert("Geolocation is not supported by your browser");
+            }
+        }
+
+        async function searchLocation() {
+            const query = document.getElementById('map-search').value;
+            if(!query) return;
+
+            document.getElementById('doctor-list').innerHTML = '<li><strong>Searching location...</strong></li>';
+
+            try {
+                // Free Nominatim Geocoding API by OpenStreetMap
+                const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
+                const data = await res.json();
+                
+                if (data && data.length > 0) {
+                    const lat = parseFloat(data[0].lat);
+                    const lng = parseFloat(data[0].lon);
+                    
+                    initMap(lat, lng);
+                    L.marker([lat, lng]).addTo(map).bindPopup(`<b>${data[0].display_name}</b>`).openPopup();
+                } else {
+                    alert("Location not found. Try a different search term.");
+                }
+            } catch (e) {
+                console.error("Geocoding failed", e);
+                alert("Search failed. Please try again.");
+            }
+        }
+
+        async function fetchNearbyClinics(userLat, userLng) {
+            // Clear old markers
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+            
+            const list = document.getElementById('doctor-list');
+            list.innerHTML = '<li><strong>Scanning for nearby hospitals & clinics...</strong></li>';
+
+            // Overpass API Query for hospitals/clinics within 5000 meters
+            const overpassQuery = `
+                [out:json];
+                (
+                  node["amenity"="hospital"](around:5000,${userLat},${userLng});
+                  node["amenity"="clinic"](around:5000,${userLat},${userLng});
+                );
+                out 10;
+            `;
+
+            try {
+                const res = await fetch("https://overpass-api.de/api/interpreter", {
+                    method: "POST",
+                    body: overpassQuery
+                });
+                const data = await res.json();
+                
+                list.innerHTML = '';
+
+                if (data.elements && data.elements.length > 0) {
+                    data.elements.forEach(node => {
+                        const lat = node.lat;
+                        const lng = node.lon;
+                        const name = node.tags.name || "Local Clinic/Hospital";
+                        
+                        // Calculate rough distance
+                        const dx = lat - userLat;
+                        const dy = lng - userLng;
+                        const distDegrees = Math.sqrt(dx*dx + dy*dy);
+                        const distKm = (distDegrees * 111).toFixed(1); 
+                        
+                        // Add marker
+                        const marker = L.marker([lat, lng]).addTo(map)
+                            .bindPopup(`<b>${name}</b><br>Healthcare Facility`);
+                        markers.push(marker);
+                        
+                        // Add to list
+                        list.innerHTML += `
+                            <li>
+                                <div>
+                                    <strong>${name}</strong><br>
+                                    <span style="font-size: 0.85rem; color: var(--text-light);">Healthcare Facility • ${distKm}km away</span>
+                                </div>
+                                <button class="btn" style="width: auto; padding: 0.5rem 1rem; font-size: 0.85rem;" onclick="window.open('https://www.google.com/maps/search/?api=1&query=${lat},${lng}', '_blank')">Directions</button>
+                            </li>
+                        `;
+                    });
+                } else {
+                    list.innerHTML = '<li><strong style="color:var(--text-light)">No hospitals found nearby.</strong></li>';
+                }
+            } catch (e) {
+                console.error("Overpass API failed", e);
+                list.innerHTML = '<li><strong style="color:red">Failed to load nearby clinics.</strong></li>';
+            }
+        }
+
+        // Override loadDoctorsData to initialize map instead
+        async function loadDoctorsData() {
+            // Initialize map after div is visible
+            setTimeout(() => {
+                initMap();
+                map.invalidateSize(); // Fixes leaflet rendering issue in hidden divs
+            }, 100);
+        }
+
+        async function handleEditProfile() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const token = localStorage.getItem('token');
+            if(!user || !token) return;
+
+            const newName = prompt("Enter your new full name:", user.name);
+            if(newName && newName.trim() !== "") {
+                try {
+                    const res = await fetch(`${API_URL}/users/me`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                        body: JSON.stringify({ name: newName.trim() })
+                    });
+                    const data = await res.json();
+                    
+                    if(data.success) {
+                        localStorage.setItem('user', JSON.stringify(data.data));
+                        alert("Profile updated successfully!");
+                        loadDashboardData(); // Refresh dashboard
+                        updateNavigation(); // Refresh top nav name
+                    } else {
+                        alert(data.message || "Failed to update profile.");
+                    }
+                } catch(e) {
+                    console.error(e);
+                    alert("Error communicating with server.");
+                }
+            }
+        }
+
+        async function exportHistory() {
+            const token = localStorage.getItem('token');
+            if(!token) return;
+
+            try {
+                const res = await fetch(`${API_URL}/symptoms`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    const user = JSON.parse(localStorage.getItem('user'));
+                    
+                    // Create an invisible div for formatting
+                    const element = document.createElement('div');
+                    element.innerHTML = `
+                        <div style="padding: 20px; font-family: sans-serif;">
+                            <h1 style="color: #0056b3;">ThyroCare Symptom Report</h1>
+                            <p><strong>Patient Name:</strong> ${user.name}</p>
+                            <p><strong>Email:</strong> ${user.email}</p>
+                            <p><strong>Date Generated:</strong> ${new Date().toLocaleDateString()}</p>
+                            <hr>
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                                <thead>
+                                    <tr style="background-color: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+                                        <th style="padding: 10px; text-align: left;">Date</th>
+                                        <th style="padding: 10px; text-align: left;">Symptom</th>
+                                        <th style="padding: 10px; text-align: left;">Severity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${data.data.length > 0 ? data.data.map(item => `
+                                        <tr style="border-bottom: 1px solid #dee2e6;">
+                                            <td style="padding: 10px;">${new Date(item.timestamp).toLocaleDateString()}</td>
+                                            <td style="padding: 10px;">${item.symptomType}</td>
+                                            <td style="padding: 10px;">${item.severity}</td>
+                                        </tr>
+                                    `).join('') : '<tr><td colspan="3" style="padding:10px; text-align:center;">No symptoms logged.</td></tr>'}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+
+                    html2pdf().from(element).set({
+                        margin: 1,
+                        filename: 'ThyroCare_Symptom_History.pdf',
+                        html2canvas: { scale: 2 },
+                        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                    }).save();
+                } else {
+                    alert('Failed to load history for export.');
+                }
+            } catch(e) {
+                console.error(e);
+                alert("Error communicating with server.");
+            }
+        }
+    </script>
+</body>
+
+</html>

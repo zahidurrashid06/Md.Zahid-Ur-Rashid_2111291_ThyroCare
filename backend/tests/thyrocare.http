@@ -1,0 +1,356 @@
+
+
+
+
+
+
+
+
+
+@baseUrl = http://localhost:3000/api/v1
+@token = PASTE_YOUR_JWT_TOKEN_HERE
+
+
+
+
+
+
+GET http://localhost:3000/health
+
+
+
+
+
+
+
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Riya Ahmed",
+  "email": "riya@example.com",
+  "password": "SecurePass123!",
+  "university": "University of Dhaka",
+  "gender": "female",
+  "yearOfStudy": 2,
+  "department": "Pharmacy"
+}
+
+
+
+
+POST {{baseUrl}}/auth/verify-otp
+Content-Type: application/json
+
+{
+  "email": "riya@example.com",
+  "otp": "123456"
+}
+
+
+
+
+POST {{baseUrl}}/auth/resend-otp
+Content-Type: application/json
+
+{
+  "email": "riya@example.com"
+}
+
+
+
+
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "riya@example.com",
+  "password": "SecurePass123!"
+}
+
+
+
+
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "riya@example.com"
+}
+
+
+
+
+POST {{baseUrl}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "token": "PASTE_RESET_TOKEN_HERE",
+  "newPassword": "NewSecurePass456!"
+}
+
+
+
+
+
+
+
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{token}}
+
+
+
+
+PUT {{baseUrl}}/users/me
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Riya Ahmed (Updated)",
+  "university": "BUET",
+  "yearOfStudy": 3,
+  "department": "Chemical Engineering"
+}
+
+
+
+
+
+
+
+
+POST {{baseUrl}}/chat/sessions
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Thyroid Symptoms Q&A",
+  "messages": [
+    { "role": "user", "content": "What causes fatigue in thyroid disorders?", "timestamp": "2026-04-24T00:00:00Z" },
+    { "role": "assistant", "content": "Fatigue in thyroid disorders is often caused by...", "timestamp": "2026-04-24T00:00:05Z" }
+  ]
+}
+
+
+
+
+GET {{baseUrl}}/chat/sessions
+Authorization: Bearer {{token}}
+
+
+
+
+PUT {{baseUrl}}/chat/sessions/SESSION_ID_HERE
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "messages": [
+    { "role": "user", "content": "What causes fatigue?", "timestamp": "2026-04-24T00:00:00Z" },
+    { "role": "assistant", "content": "Fatigue is caused by...", "timestamp": "2026-04-24T00:00:05Z" },
+    { "role": "user", "content": "What about hair loss?", "timestamp": "2026-04-24T00:01:00Z" }
+  ]
+}
+
+
+
+
+
+
+
+POST {{baseUrl}}/symptoms
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "symptomType": "fatigue",
+  "duration": "1 week",
+  "severity": "moderate",
+  "notes": "Feeling extremely tired even after 8 hours of sleep."
+}
+
+
+
+
+GET {{baseUrl}}/symptoms?from=2026-01-01&to=2026-12-31
+Authorization: Bearer {{token}}
+
+
+
+
+GET {{baseUrl}}/symptoms/export
+Authorization: Bearer {{token}}
+
+
+
+
+
+
+
+GET {{baseUrl}}/articles?category=Basics&page=1&limit=5
+Authorization: Bearer {{token}}
+
+
+
+
+GET {{baseUrl}}/articles/ARTICLE_ID_HERE
+Authorization: Bearer {{token}}
+
+
+
+
+POST {{baseUrl}}/articles/ARTICLE_ID_HERE/bookmark
+Authorization: Bearer {{token}}
+
+
+
+
+GET {{baseUrl}}/articles/bookmarks
+Authorization: Bearer {{token}}
+
+
+
+
+POST {{baseUrl}}/articles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Understanding Hypothyroidism",
+  "category": "Disorders",
+  "content": "<p>Hypothyroidism occurs when the thyroid gland doesn't produce enough thyroid hormone...</p>",
+  "imageUrl": "https://example.com/hypothyroidism.jpg",
+  "sourceCitation": "American Thyroid Association, 2023",
+  "isApproved": true,
+  "reviewedBy": "Dr. S. Rahman"
+}
+
+
+
+
+
+
+
+GET {{baseUrl}}/doctors
+Authorization: Bearer {{token}}
+
+
+
+
+GET {{baseUrl}}/doctors?lat=23.7276&lng=90.3924&radiusKm=15&specialization=Endocrinologist
+Authorization: Bearer {{token}}
+
+
+
+
+POST {{baseUrl}}/doctors/DOCTOR_ID_HERE/prefer
+Authorization: Bearer {{token}}
+
+
+
+
+GET {{baseUrl}}/doctors/preferred
+Authorization: Bearer {{token}}
+
+
+
+
+
+
+
+GET {{baseUrl}}/advisors
+
+
+
+
+
+
+
+GET {{baseUrl}}/notifications
+Authorization: Bearer {{token}}
+
+
+
+
+GET {{baseUrl}}/notifications?unreadOnly=true
+Authorization: Bearer {{token}}
+
+
+
+
+PUT {{baseUrl}}/notifications/NOTIFICATION_ID_HERE/read
+Authorization: Bearer {{token}}
+
+
+
+
+PUT {{baseUrl}}/notifications/read-all
+Authorization: Bearer {{token}}
+
+
+
+
+
+
+
+GET {{baseUrl}}/admin/users?page=1&limit=20
+Authorization: Bearer {{token}}
+
+
+
+
+GET {{baseUrl}}/admin/users?search=riya&role=student
+Authorization: Bearer {{token}}
+
+
+
+
+GET {{baseUrl}}/admin/stats
+Authorization: Bearer {{token}}
+
+
+
+
+PATCH {{baseUrl}}/admin/users/USER_ID_HERE/approve
+Authorization: Bearer {{token}}
+
+
+
+
+PATCH {{baseUrl}}/admin/users/USER_ID_HERE/suspend
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "reason": "Violation of terms of service."
+}
+
+
+
+
+PATCH {{baseUrl}}/admin/users/USER_ID_HERE/role
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "role": "medical_advisor"
+}
+
+
+
+
+GET {{baseUrl}}/admin/audit-log?page=1&limit=20
+Authorization: Bearer {{token}}
+
+
+
+
+POST {{baseUrl}}/notifications
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "userId": "USER_ID_HERE",
+  "title": "New Article Available",
+  "message": "A new article on Hypothyroidism has been published. Check it out!"
+}
