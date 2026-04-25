@@ -905,10 +905,8 @@
             `;
 
             try {
-                const res = await fetch("https://overpass-api.de/api/interpreter", {
-                    method: "POST",
-                    body: overpassQuery
-                });
+                    const res = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(overpassQuery)}`);
+
                 const data = await res.json();
                 
                 list.innerHTML = '';
