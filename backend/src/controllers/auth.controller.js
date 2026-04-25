@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');
 const prisma = require('../config/db');
 const { sendEmail } = require('../config/email');
 
@@ -189,7 +189,8 @@ async function forgotPassword(req, res, next) {
 
         await prisma.passwordResetToken.updateMany({ where: { userId: user.id, isUsed: false }, data: { isUsed: true } });
 
-        const token = uuidv4();
+        const token = crypto.randomUUID();
+
         const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
         await prisma.passwordResetToken.create({ data: { userId: user.id, token, expiresAt } });
 
